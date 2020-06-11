@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.XR.ARFoundation;
@@ -26,10 +26,12 @@ public class PlacementController : MonoBehaviour
     }
 
     private ARRaycastManager arRaycastMgr;
+    private ARPlaneManager arPlaneMgr;
 
     void Awake()
     {
         arRaycastMgr = GetComponent<ARRaycastManager>();
+        arPlaneMgr = GetComponent<ARPlaneManager>();
     }
 
     // if touched screen, check to see if collide with anything
@@ -58,10 +60,15 @@ public class PlacementController : MonoBehaviour
         if (arRaycastMgr.Raycast(touchPosition, hits, TrackableType.PlaneWithinPolygon))
         {
             var hitPose = hits[0].pose;
-            // new object and position
-            hitPose.position.y += 5f;
-            Instantiate(placedPrefab, hitPose.position, hitPose.rotation);
+            if (arPlaneMgr.enabled)
+            {
+                // new object and position
+                hitPose.position.y += 0.05f;
+                Instantiate(placedPrefab, hitPose.position, hitPose.rotation);
+            }
+            
         }
+        
     }
 
     static List<ARRaycastHit> hits = new List<ARRaycastHit>();
